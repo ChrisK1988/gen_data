@@ -1,6 +1,11 @@
 ---
 title: "Assignment #1"
 format: html
+editor: visual 
+execute-dir: project
+knitr:
+  opts_chunk:
+    engine.path: "C:/Program Files/Git/usr/bin/bash.exe"
 ---
 
 ## Assignment 1
@@ -19,93 +24,182 @@ Before fitting any models, it is essential to understand the data. Use R or bash
 
 (i) Read the .fam file. How many samples does the dataset contain?
 
+
 ```{r setup, include=FALSE}
 # Set up a consistent path for all chunks of code
 knitr::opts_knit$set(root.dir = normalizePath("../../"))
 ```
 
+# Load R packages
+```{r, message=FALSE, warning=FALSE, results='hide'}
+library(data.table)
+library(seqminer)
+library(HardyWeinberg)
+library(dplyr)
+```
+
 (ii) What is the 'variable type' of the response variable (i.e.Continuous or binary)?
 
-```         
-# Your answer here...
+# Detect variable type of .fam file
+```{bash}
+head ./02_activities/data/gwa.qc.A1.fam
+#Answer: The data is continuous
 ```
 
 (iii) Read the .bim file. How many SNPs does the dataset contain?
 
-```         
-# Your answer here...
+# Check how many SNPs are in .bim file
+```{bash}
+wc -l ./02_activities/data/gwa.qc.A1.bim
+#Answer: There are 101,083 SNPs in the dataset
 ```
 
 #### Question 2: Allele Frequency Estimation
 
 (i) Load the genotype matrix for SNPs rs1861, rs3813199, rs3128342, and rs11804831 using additive coding. What are the allele frequencies (AFs) for these four SNPs?
 
-```         
-# Your code here...
+# Subset the variants to only the rsIDs of interest
+```{bash, results='hide', message=FALSE, warning=FALSE}
+printf "%s\n" rs1861 rs3813199 rs3128342 rs11804831 > snplist.txt
+plink2 --bfile ./02_activities/data/gwa.qc.A1 --export A --extract snplist.txt --out 02_activities/data/gwa.qc.A1.additive
 ```
+
+# Generate a genotype matrix using R and output the allele frequencies of the reference alleles
+```{r}
+geno = fread("02_activities/data/gwa.qc.A1.additive.raw")
+fam_all <- fread("02_activities/data/gwa.qc.A1.fam")
+bim_all <- fread("02_activities/data/gwa.qc.A1.bim")
+N=dim(fam_all)[1]
+M = nrow(bim_all)
+indx.SNP=which((bim_all$V2)%in%c('rs1861','rs3813199','rs3128342','rs11804831'))
+geno_mat<- readPlinkToMatrixByIndex('02_activities/data/gwa.qc.A1', 1:N, indx.SNP)
+
+geno_mat[geno_mat==-9]=NA
+
+allele_freq <- apply(geno_mat, 2, function(x) {
+ sum(x, na.rm = TRUE) / (2 * sum(!is.na(x)))
+})
+
+allele_freq
+#The allele frequencies for these 4 SNPs are 0.9430874, 0.8456588, 0.6948789, 
+#and 0.9460141, respectively
+``` 
 
 (ii) What are the minor allele frequencies (MAFs) for these four SNPs?
 
-```         
-# Your code here...
+# Obtain allele frequencies using PLINK
+```{bash}
+plink2 --bfile ./02_activities/data/gwa.qc.A1 --freq --extract snplist.txt --out ./02_activities/data/gwa.qc.A1_freq
 ```
+
+# Output the minor allele frequencies
+```{bash}
+awk '{ print $6}' ./02_activities/data/gwa.qc.A1_freq.afreq
+#The minor allele frequencies are 0.0569126, 0.154341,
+#0.305121, and 0.0539859, respectively
+```
+
+
 
 #### Question 3: Hardy–Weinberg Equilibrium (HWE) Test
 
 (i) Conduct the Hardy–Weinberg Equilibrium (HWE) test for all SNPs in the .bim file. Then, load the file containing the HWE p-value results and display the first few rows of the resulting data frame.
 
-```         
-# Your code here...
+# Run HWE test using PLINK
+```{bash}
+plink2 --bfile ./02_activities/data/gwa.qc.A1 --hardy --out ./02_activities/data/gwa.qc.A1_hwe
+```
+
+# Output the first few HWE values in a friendly format
+```{r}
+hwe = fread("02_activities/data/gwa.qc.A1_hwe.hardy")
+head(hwe)
 ```
 
 (ii) What are the HWE p-values for SNPs rs1861, rs3813199, rs3128342, and rs11804831?
 
-```         
-# Your code here...
+# Output HWE p-values for rsIDs of interest
+```{r}
+hwe_subset = hwe[hwe$ID%in%c('rs1861','rs3813199','rs3128342','rs11804831'),]
+hwe_subset$P
+#The p-values are 1, 0.113354, 0.330273, and 0.274719, respectively
 ```
 
 #### Question 4: Genetic Association Test
 
 (i) Conduct a linear regression to test the association between SNP rs1861 and the phenotype. What is the p-value?
 
-```         
-# Your code here...
+# Extract variant of interest using R
+```{r}
+freq <- fread("02_activities/data/gwa.qc.A1_freq.afreq")
+freq[freq$ID=='rs1861',]
+```
+
+# Run a linear regression for the variant of interest and obtain the p-value
+```{r}
+geno_subset <- subset(geno, select=c(1:6,10))
+model = glm(PHENOTYPE ~ rs1861_C, data=geno_subset)
+summary(model)
+#The p-value is p < 2e-16
 ```
 
 (ii) How would you interpret the beta coefficient from this regression?
 
-```         
-# Your answer here...
+# Describe beta result of the regression
+```{bash} 
+#The beta is positive (0.97382), so there is a positive association of this SNP with the phenotype. The relatioship is also strong as it is below genome-wide significance (p < 2e-16)
 ```
 
 (iii) Plot the scatterplot of phenotype versus the genotype of SNP rs1861. Add the regression line to the plot.
 
-```         
-# Your code here...
+# Plot the regression using R
+```{r}
+plot(geno_subset$rs1861_C, geno_subset$PHENOTYPE,
+ type = "p", pch = 16,
+ main = "Genotype vs. Phenotype for rs1861",
+ xlab = "Genotype", ylab = "Phenotype")
+
+abline(lm(geno_subset$PHENOTYPE ~ geno_subset$rs1861_C), col = "red", lwd = 3)
 ```
 
 (iv) Convert the genotype coding for rs1861 to recessive coding.
 
-```         
-# Your code here...
+# Convert to recessive-coded genotypes using R
+```{r}
+
+geno_subset$recessive.codes = ifelse(geno_subset$rs1861_C == 2, 1, 0)
 ```
 
 (v) Conduct a linear regression to test the association between the recessive-coded rs1861 and the phenotype. What is the p-value?
 
-```         
-# Your code here...
+# Do a linear regression for the recessive-coded allele format
+```{r} 
+       
+model2 = glm(PHENOTYPE ~ recessive.codes, data=geno_subset)
+
+summary(model2)
+#The p-value is still p < 2e-16
 ```
 
 (vi) Plot the scatterplot of phenotype versus the recessive-coded genotype of rs1861. Add the regression line to the plot.
 
-```         
-# Your code here...
+# Plot the recessive-coded regression
+```{r}
+
+plot(geno_subset$recessive.codes, geno_subset$PHENOTYPE,
+ type = "p", pch = 16,
+ main = "Genotype vs. Phenotype for rs1861",
+ xlab = "Genotype (Recessive Coding)", ylab = "Phenotype")
+
+abline(lm(geno_subset$PHENOTYPE ~ geno_subset$recessive.codes), col = "red", lwd = 3)
+
 ```
 
 (vii) Which model fits better? Justify your answer.
 
-```         
-# Your answer here...
+# Interpretation
+```{bash}        
+#The better fitting model is the additive coding model. While the beta estimate (B= 1.00754) appears to be more strongly related to the phenotype in the recessived coded model, the significance of the p-value is still very strong (p < 2e-16). The Akaike Information Criterion (AIC) is slightly lower for the additive coding (AIC = 11277) compared to the recessive coded alleles (AIC = 11292), suggesting that the additive coded allele model is a better fit to the data. However, it is clear that these values are very close to one another and any sort of improvement in model fit is likely extremely small/non-significant
 ```
 
 ### Criteria
