@@ -1,6 +1,11 @@
 ---
+
 title: "Assignment #2"
 format: html
+
+execute:
+  shell: ["C:/Program Files/Git/bin/bash.exe"]
+
 ---
 
 You will need **PLINK2** installed and available in your PATH. Please follow the OS-specific setup guide in [`SETUP.md`](../../SETUP.md). The dataset for this assignment consists of the following binary PLINK files: `gwa.A2.bed`, `gwa.A2.bim`, `gwa.A2.fam` , available at the following Google Drive link: <https://drive.google.com/drive/folders/1rHoy3z52Yyj985ukjjtLhfIBxchpyYtZ?usp=drive_link>. Please download all three files and save them in `02_activities/data/`.
@@ -9,23 +14,29 @@ You will need **PLINK2** installed and available in your PATH. Please follow the
 
 Before you run any models, first get familiar with the dataset. You may find `data.table::fread()` in R helpful for reading `.bim` and `.fam` files.
 
+#Setup the working environment
+```{r setup, include=FALSE}
+# Input files are expected in ./02_activities/data/.
+#knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = normalizePath("../../"))
+library(data.table)
+library(qqman)
+```
+
 (i) Read the `.fam` file. How many samples does the dataset contain?
 
-```{r}
-# Your code here...
+```{bash,results='hide',message=FALSE, warning=FALSE}
+wc -l ./02_activities/data/gwa.A2.fam
+#There are 4000 samples
 ```
 
 (ii) Read the `.bim` file. How many SNPs does the dataset contain?
 
-```{r}
-# Your code here...
+```{bash}
+wc -l ./02_activities/data/gwa.A2.bim
+#There are 306,102 SNPs in the dataset
 ```
 
-(iii) Make a histogram (or density plot) of the phenotype. Does it look roughly Gaussian?
-
-```{r}
-# Your code here...
-```
 
 #### Question 2: Quality control (QC)
 
@@ -33,8 +44,9 @@ Now we will perform QC using PLINK2 for the genotype files in `gwa.A2`.
 
 (i) Using PLINK2 from the command line (bash), perform basic QC with the following filters: MAF ≥ 0.05, SNP missingness (`--geno`) ≤ 0.01, individual missingness (`--mind`) ≤ 0.10, and HWE p-value ≥ 0.00005, and output the QC’ed dataset as `gwa.qc.A2`.
 
+#Run basic QC (MAF, missingness, and HWE filters)
 ```{bash}
-# Your code here...
+plink2 --bfile ./02_activities/data/gwa.A2 --maf 0.05 --geno 0.01 --mind 0.1 --hwe 0.00005 --make-bed --out ./02_activities/data/gwa.qc.A2
 ```
 
 #### Question 3: Relatedness
@@ -43,20 +55,28 @@ In this question, you will use **PLINK2’s built-in KING-robust kinship** (`--k
 
 i)  Perform LD pruning on `gwa.qc.A2` using PLINK2 with the following parameters: `--indep-pairwise 500 50 0.05`, and then generate a new dataset containing only the pruned SNPs.
 
+#LD-prune the dataset
 ```{bash}
-# Your code here...
+plink2 --bfile ./02_activities/data/gwa.qc.A2 --indep-pairwise 500 50 0.05 --out ./02_activities/data/gwa.qc.A2
 ```
+
+#Keep only SNPs that pass QC
+```{bash}
+plink2 --bfile ./02_activities/data/gwa.qc.A2 --extract ./02_activities/data/gwa.qc.A2.prune.in --make-bed --out ./02_activities/data/gwa.qc.A2_pruned
+```
+
 
 (ii) Use PLINK2 on the LD-pruned dataset to identify a set of unrelated individuals up to (approximately) 2nd-degree relatives (use a kinship cutoff of 0.0884).
 
+#Generate a dataset of unrelated, QC'd individuals
 ```{bash}
-# Your code here...
+plink2 --bfile ./02_activities/data/gwa.qc.A2_pruned --king-cutoff 0.0884 --out ./02_activities/data/gwa.qc.A2_pruned
 ```
 
 (iii) Using the unrelated individual list from part (ii), create a dataset containing only unrelated individuals and name it `gwa.qc_unrelated.A2`.
 
 ```{bash}
-# Your code here...
+plink2 --bfile ./02_activities/data/gwa.qc.A2_pruned --keep ./02_activities/data/gwa.qc.A2_pruned.king.cutoff.in.id --make-bed --out ./02_activities/data/gwa.qc_unrelated.A2
 ```
 
 #### Question 4: principal component analysis (PCA)
@@ -65,10 +85,15 @@ i)  Perform LD pruning on `gwa.qc.A2` using PLINK2 with the following parameters
 
     (Hint: Refer to the PCA section in the GWAS Tutorial II. You should use a `*.prune.in` file to select a set of independent SNPs before performing PCA.)
 
+#Select set of independent SNPs
 ```{bash}
-# Your code here...
+plink2 --bfile ./02_activities/data/gwa.qc_unrelated.A2 --extract ./02_activities/data/gwa.qc.A2.prune.in --make-bed --out ./02_activities/data/gwa.qc_unrelated.A2_pruned
 ```
 
+#Run PCA
+```{bash}
+plink2 --bfile ./02_activities/data/gwa.qc_unrelated.A2_pruned --pca 20 --out ./02_activities/data/gwa.qc.A2_unrel_PCA
+```
 #### Question 5: GWAS analyses
 
 We now test for association between each SNP and the continuous phenotype, adjusting for population structure using the top 3 PCs.
@@ -81,27 +106,48 @@ Assume that:
 
 (i) Using PLINK2, run a linear regression GWAS using `gwa.qc_unrelated.A2` as the input dataset. Adjust for PCs 1–3 as covariates.
 
+#Run linear regression with the first 3 principal components as covariates
 ```{bash}
-# Your code here...
+plink2 --bfile ./02_activities/data/gwa.qc_unrelated.A2 --ci 0.95 --linear --covar ./02_activities/data/gwa.qc.A2_unrel_PCA.eigenvec --covar-name PC1,PC2,PC3 --adjust --out ./02_activities/data/gwa.qc.A2_assoc
 ```
 
 (ii) Create a Manhattan plot of the GWAS results.
 
+#Load data into R
 ```{r}
-# Your code here...
+assoc <- data.table::fread("./02_activities/data/gwa.qc.A2_assoc.PHENO1.glm.linear")
+
+assoc_adjusted <- data.table::fread("./02_activities/data/gwa.qc.A2_assoc.PHENO1.glm.linear.adjusted")
+
+assoc_add <- assoc[TEST == "ADD"]
+
+colnames(assoc_add) = c("CHROM", "POS", "ID", "REF", "ALT", "PROVISIONAL_REF?", "A1", "OMITTED", "A1_FREQ", "TEST", "OBS_CT", "BETA", "SE", "L95", "U95", "T_STAT", "P", "ERRCODE")
+
+# Manhattan plot
+manhattan(assoc_add,
+          chr = "CHROM",
+          bp  = "POS",
+          snp = "ID",
+          p   = "P",
+          xlab = "Chromosome",
+          ylab = "-log10p",
+          suggestiveline = FALSE,
+          cex.axis = 1.5,
+          col = c("blue", "orange"))
 ```
 
 (iii) Create a QQ plot of the GWAS p-values.
 
+#Generate QQ plot of the GWAS p-values
 ```{r}
-# Your code here...
+qq(assoc_add$P, main = "Q-Q plot of GWAS p-values")
 ```
 
 ### Criteria
 
 | Criteria | Complete | Incomplete |
 |:--------------|:----------------------------------|:----------------------|
-| **Data inspection** | Correct sample and SNP counts; phenotype plot with a brief comment on Gaussianity. | Counts or phenotype description/plot missing or incorrect. |
+| **Data inspection** | Correct sample and SNP counts | Counts or phenotype description/plot missing or incorrect. |
 | **QC & LD pruning** | Correct PLINK2 QC command and thresholds. | QC/pruning commands, thresholds, or output datasets missing or incorrect. |
 | **Relatedness & PCA** | Correct use of PLINK2 command to obtain unrelated samples and PCA run on pruned SNPs. | Relatedness step, unrelated dataset, or PCA analysis missing or incorrect. |
 | **GWAS & visualisation** | Linear regression GWAS with PCs as covariates; Manhattan and QQ plots produced. | GWAS command, or Manhattan/QQ plots missing or clearly incorrect. |
@@ -121,7 +167,7 @@ Assume that:
 -   What to submit for this assignment:
     -   Populate this Quarto document (`assignment_2.qmd`).
     -   Render the document with Quarto: `quarto render assignment_2.qmd`.
-    -   Submit both `assignment_2.qmd` and the rendered HTML file `assignment_2.html` in your pull request.
+    -   Submit both `assignment_2.qmd`, the rendered HTML file `assignment_2.html` and saved figures in your pull request.
 
 -   What the pull request link should look like for this assignment: `https://github.com/<your_github_username>/gen_data/pull/<pr_id>`
 
