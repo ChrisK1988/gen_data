@@ -134,7 +134,7 @@ Options in effect:
   --mind 0.1
   --out ./02_activities/data/gwa.qc.A2
 
-Start time: Tue Mar 31 15:42:57 2026
+Start time: Wed Apr 01 21:31:01 2026
 15897 MiB RAM detected; reserving 7948 MiB for main workspace.
 Using up to 14 threads (change this with --threads).
 4000 samples (2000 females, 2000 males; 4000 founders) loaded from
@@ -155,7 +155,7 @@ Calculating allele frequencies... 0%21%42%64%85%done.
 Writing ./02_activities/data/gwa.qc.A2.fam ... done.
 Writing ./02_activities/data/gwa.qc.A2.bim ... done.
 Writing ./02_activities/data/gwa.qc.A2.bed ... 0%21%43%65%87%done.
-End time: Tue Mar 31 15:42:58 2026</code></pre>
+End time: Wed Apr 01 21:31:02 2026</code></pre>
 </div>
 </div>
 </section>
@@ -177,7 +177,7 @@ Options in effect:
   --indep-pairwise 500 50 0.05
   --out ./02_activities/data/gwa.qc.A2
 
-Start time: Tue Mar 31 15:42:58 2026
+Start time: Wed Apr 01 21:31:02 2026
 15897 MiB RAM detected; reserving 7948 MiB for main workspace.
 Using up to 14 threads (change this with --threads).
 4000 samples (2000 females, 2000 males; 4000 founders) loaded from
@@ -189,7 +189,7 @@ Calculating allele frequencies... 0%64%done.
 Writing...
 Variant lists written to ./02_activities/data/gwa.qc.A2.prune.in and
 ./02_activities/data/gwa.qc.A2.prune.out .
-End time: Tue Mar 31 15:42:59 2026</code></pre>
+End time: Wed Apr 01 21:31:03 2026</code></pre>
 </div>
 </div>
 <p>#Keep only SNPs that pass QC</p>
@@ -205,7 +205,7 @@ Options in effect:
   --make-bed
   --out ./02_activities/data/gwa.qc.A2_pruned
 
-Start time: Tue Mar 31 15:42:59 2026
+Start time: Wed Apr 01 21:31:03 2026
 15897 MiB RAM detected; reserving 7948 MiB for main workspace.
 Using up to 14 threads (change this with --threads).
 4000 samples (2000 females, 2000 males; 4000 founders) loaded from
@@ -217,7 +217,7 @@ Using up to 14 threads (change this with --threads).
 Writing ./02_activities/data/gwa.qc.A2_pruned.fam ... done.
 Writing ./02_activities/data/gwa.qc.A2_pruned.bim ... done.
 Writing ./02_activities/data/gwa.qc.A2_pruned.bed ... 0%61%done.
-End time: Tue Mar 31 15:42:59 2026</code></pre>
+End time: Wed Apr 01 21:31:04 2026</code></pre>
 </div>
 </div>
 <ol start="2" type="i">
@@ -235,7 +235,7 @@ Options in effect:
   --king-cutoff 0.0884
   --out ./02_activities/data/gwa.qc.A2_pruned
 
-Start time: Tue Mar 31 15:43:00 2026
+Start time: Wed Apr 01 21:31:04 2026
 15897 MiB RAM detected; reserving 7948 MiB for main workspace.
 Using up to 14 threads (change this with --threads).
 4000 samples (2000 females, 2000 males; 4000 founders) loaded from
@@ -265,30 +265,30 @@ Using up to 14 threads (change this with --threads).
 --king-cutoff: Excluded sample IDs written to
 ./02_activities/data/gwa.qc.A2_pruned.king.cutoff.out.id , and 4000 remaining
 sample IDs written to ./02_activities/data/gwa.qc.A2_pruned.king.cutoff.in.id .
-End time: Tue Mar 31 15:43:01 2026</code></pre>
+End time: Wed Apr 01 21:31:06 2026</code></pre>
 </div>
 </div>
 <ol start="3" type="i">
 <li>Using the unrelated individual list from part (ii), create a dataset containing only unrelated individuals and name it <code>gwa.qc_unrelated.A2</code>.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> ./02_activities/data/gwa.qc.A2_pruned <span class="at">--keep</span> ./02_activities/data/gwa.qc.A2_pruned.king.cutoff.in.id <span class="at">--make-bed</span> <span class="at">--out</span> ./02_activities/data/gwa.qc_unrelated.A2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> ./02_activities/data/gwa.qc.A2 <span class="at">--keep</span> ./02_activities/data/gwa.qc.A2_pruned.king.cutoff.in.id <span class="at">--make-bed</span> <span class="at">--out</span> ./02_activities/data/gwa.qc_unrelated.A2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>PLINK v2.0.0-a.7 64-bit (11 Mar 2026)               cog-genomics.org/plink/2.0/
 (C) 2005-2026 Shaun Purcell, Christopher Chang    GNU General Public License v3
 Logging to ./02_activities/data/gwa.qc_unrelated.A2.log.
 Options in effect:
-  --bfile ./02_activities/data/gwa.qc.A2_pruned
+  --bfile ./02_activities/data/gwa.qc.A2
   --keep ./02_activities/data/gwa.qc.A2_pruned.king.cutoff.in.id
   --make-bed
   --out ./02_activities/data/gwa.qc_unrelated.A2
 
-Start time: Tue Mar 31 15:43:01 2026
+Start time: Wed Apr 01 21:31:06 2026
 15897 MiB RAM detected; reserving 7948 MiB for main workspace.
 Using up to 14 threads (change this with --threads).
 4000 samples (2000 females, 2000 males; 4000 founders) loaded from
-./02_activities/data/gwa.qc.A2_pruned.fam.
-21914 variants loaded from ./02_activities/data/gwa.qc.A2_pruned.bim.
+./02_activities/data/gwa.qc.A2.fam.
+101083 variants loaded from ./02_activities/data/gwa.qc.A2.bim.
 1 quantitative phenotype loaded (4000 values).
 --keep: 4000 samples remaining.
 4000 samples (2000 females, 2000 males; 4000 founders) remaining after main
@@ -296,8 +296,8 @@ filters.
 4000 quantitative phenotype values remaining after main filters.
 Writing ./02_activities/data/gwa.qc_unrelated.A2.fam ... done.
 Writing ./02_activities/data/gwa.qc_unrelated.A2.bim ... done.
-Writing ./02_activities/data/gwa.qc_unrelated.A2.bed ... 0%done.
-End time: Tue Mar 31 15:43:02 2026</code></pre>
+Writing ./02_activities/data/gwa.qc_unrelated.A2.bed ... 0%64%done.
+End time: Wed Apr 01 21:31:06 2026</code></pre>
 </div>
 </div>
 </section>
@@ -320,19 +320,19 @@ Options in effect:
   --make-bed
   --out ./02_activities/data/gwa.qc_unrelated.A2_pruned
 
-Start time: Tue Mar 31 15:43:02 2026
+Start time: Wed Apr 01 21:31:07 2026
 15897 MiB RAM detected; reserving 7948 MiB for main workspace.
 Using up to 14 threads (change this with --threads).
 4000 samples (2000 females, 2000 males; 4000 founders) loaded from
 ./02_activities/data/gwa.qc_unrelated.A2.fam.
-21914 variants loaded from ./02_activities/data/gwa.qc_unrelated.A2.bim.
+101083 variants loaded from ./02_activities/data/gwa.qc_unrelated.A2.bim.
 1 quantitative phenotype loaded (4000 values).
 --extract: 21914 variants remaining.
 21914 variants remaining after main filters.
 Writing ./02_activities/data/gwa.qc_unrelated.A2_pruned.fam ... done.
 Writing ./02_activities/data/gwa.qc_unrelated.A2_pruned.bim ... done.
-Writing ./02_activities/data/gwa.qc_unrelated.A2_pruned.bed ... 0%done.
-End time: Tue Mar 31 15:43:02 2026</code></pre>
+Writing ./02_activities/data/gwa.qc_unrelated.A2_pruned.bed ... 0%61%done.
+End time: Wed Apr 01 21:31:07 2026</code></pre>
 </div>
 </div>
 <p>#Run PCA</p>
@@ -347,7 +347,7 @@ Options in effect:
   --out ./02_activities/data/gwa.qc.A2_unrel_PCA
   --pca 20
 
-Start time: Tue Mar 31 15:43:03 2026
+Start time: Wed Apr 01 21:31:08 2026
 15897 MiB RAM detected; reserving 7948 MiB for main workspace.
 Using up to 14 threads (change this with --threads).
 4000 samples (2000 females, 2000 males; 4000 founders) loaded from
@@ -361,7 +361,7 @@ Extracting eigenvalues and eigenvectors... done.
 --pca: Eigenvectors written to
 ./02_activities/data/gwa.qc.A2_unrel_PCA.eigenvec , and eigenvalues written to
 ./02_activities/data/gwa.qc.A2_unrel_PCA.eigenval .
-End time: Tue Mar 31 15:43:18 2026</code></pre>
+End time: Wed Apr 01 21:31:20 2026</code></pre>
 </div>
 </div>
 </section>
@@ -392,21 +392,21 @@ Options in effect:
   --glm
   --out ./02_activities/data/gwa.qc.A2_assoc
 
-Start time: Tue Mar 31 15:43:19 2026
+Start time: Wed Apr 01 21:31:21 2026
 15897 MiB RAM detected; reserving 7948 MiB for main workspace.
 Using up to 14 threads (change this with --threads).
 4000 samples (2000 females, 2000 males; 4000 founders) loaded from
 ./02_activities/data/gwa.qc_unrelated.A2.fam.
-21914 variants loaded from ./02_activities/data/gwa.qc_unrelated.A2.bim.
+101083 variants loaded from ./02_activities/data/gwa.qc_unrelated.A2.bim.
 1 quantitative phenotype loaded (4000 values).
 3 covariates loaded from ./02_activities/data/gwa.qc.A2_unrel_PCA.eigenvec.
-Calculating allele frequencies... 0%done.
---glm linear regression on phenotype 'PHENO1': 0%done.
+Calculating allele frequencies... 0%64%done.
+--glm linear regression on phenotype 'PHENO1': 0%64%done.
 Results written to ./02_activities/data/gwa.qc.A2_assoc.PHENO1.glm.linear .
---adjust: Genomic inflation est. lambda (based on median chisq) = 1.02081.
---adjust values (21914 tests) written to
+--adjust: Genomic inflation est. lambda (based on median chisq) = 1.01779.
+--adjust values (101083 tests) written to
 ./02_activities/data/gwa.qc.A2_assoc.PHENO1.glm.linear.adjusted .
-End time: Tue Mar 31 15:43:20 2026</code></pre>
+End time: Wed Apr 01 21:31:24 2026</code></pre>
 </div>
 </div>
 <ol start="2" type="i">
@@ -423,16 +423,19 @@ End time: Tue Mar 31 15:43:20 2026</code></pre>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(assoc_add) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"CHROM"</span>, <span class="st">"POS"</span>, <span class="st">"ID"</span>, <span class="st">"REF"</span>, <span class="st">"ALT"</span>, <span class="st">"PROVISIONAL_REF?"</span>, <span class="st">"A1"</span>, <span class="st">"OMITTED"</span>, <span class="st">"A1_FREQ"</span>, <span class="st">"TEST"</span>, <span class="st">"OBS_CT"</span>, <span class="st">"BETA"</span>, <span class="st">"SE"</span>, <span class="st">"L95"</span>, <span class="st">"U95"</span>, <span class="st">"T_STAT"</span>, <span class="st">"P"</span>, <span class="st">"ERRCODE"</span>)</span>
 <span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Manhattan plot</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="fu">manhattan</span>(assoc_add,</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">chr =</span> <span class="st">"CHROM"</span>,</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>          <span class="at">bp  =</span> <span class="st">"POS"</span>,</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>          <span class="at">snp =</span> <span class="st">"ID"</span>,</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">p   =</span> <span class="st">"P"</span>,</span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">"Chromosome"</span>,</span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">"-log10p"</span>,</span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>          <span class="at">suggestiveline =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>          <span class="at">cex.axis =</span> <span class="fl">1.5</span>,</span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>          <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"orange"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>sig_snps <span class="ot">=</span> assoc_add<span class="sc">$</span>ID[assoc_add<span class="sc">$</span>P <span class="sc">&lt;</span> <span class="fl">5e-8</span>]</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="fu">manhattan</span>(assoc_add,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>          <span class="at">chr =</span> <span class="st">"CHROM"</span>,</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>          <span class="at">bp  =</span> <span class="st">"POS"</span>,</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">snp =</span> <span class="st">"ID"</span>,</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>          <span class="at">p   =</span> <span class="st">"P"</span>,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">"Chromosome"</span>,</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">"-log10p"</span>,</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>          <span class="at">suggestiveline =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>          <span class="at">cex.axis =</span> <span class="fl">1.5</span>,</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>          <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"orange"</span>), </span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>          <span class="at">annotatePval =</span> <span class="fl">5e-8</span>,</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>          <span class="at">highlight =</span> sig_snps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

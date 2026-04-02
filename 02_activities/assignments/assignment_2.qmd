@@ -76,7 +76,7 @@ plink2 --bfile ./02_activities/data/gwa.qc.A2_pruned --king-cutoff 0.0884 --out 
 (iii) Using the unrelated individual list from part (ii), create a dataset containing only unrelated individuals and name it `gwa.qc_unrelated.A2`.
 
 ```{bash}
-plink2 --bfile ./02_activities/data/gwa.qc.A2_pruned --keep ./02_activities/data/gwa.qc.A2_pruned.king.cutoff.in.id --make-bed --out ./02_activities/data/gwa.qc_unrelated.A2
+plink2 --bfile ./02_activities/data/gwa.qc.A2 --keep ./02_activities/data/gwa.qc.A2_pruned.king.cutoff.in.id --make-bed --out ./02_activities/data/gwa.qc_unrelated.A2
 ```
 
 #### Question 4: principal component analysis (PCA)
@@ -124,6 +124,7 @@ assoc_add <- assoc[TEST == "ADD"]
 colnames(assoc_add) = c("CHROM", "POS", "ID", "REF", "ALT", "PROVISIONAL_REF?", "A1", "OMITTED", "A1_FREQ", "TEST", "OBS_CT", "BETA", "SE", "L95", "U95", "T_STAT", "P", "ERRCODE")
 
 # Manhattan plot
+sig_snps = assoc_add$ID[assoc_add$P < 5e-8]
 manhattan(assoc_add,
           chr = "CHROM",
           bp  = "POS",
@@ -133,7 +134,9 @@ manhattan(assoc_add,
           ylab = "-log10p",
           suggestiveline = FALSE,
           cex.axis = 1.5,
-          col = c("blue", "orange"))
+          col = c("blue", "orange"), 
+          annotatePval = 5e-8,
+          highlight = sig_snps)
 ```
 
 (iii) Create a QQ plot of the GWAS p-values.
